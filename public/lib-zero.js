@@ -1,40 +1,63 @@
 console.log("!!!!! lib-zero init !!!!!");
 
-const maindiv = "kanvas";
-const state = {
-  start: 1,
-  end:100
-};
+const maindiv = "appkanvas";
 
-function init() {
-  const canvas = document.createElement("canvas");
-  canvas.style.width = "100%";
-  canvas.style.height = "100%";
-  canvas.id = "maincanvas";
-  const element = document.getElementById(maindiv);
-  element.appendChild(canvas);
+class LibZero {
+  const appstate = {
+    START: 0,
+    CUTSCENE:1,
+    GAME: 2,
+    LOST:3
+  };
+  if (Object.freeze) Object.freeze(appstate);
   
-  const engine = new BABYLON.Engine(canvas, true);
-  const scene = new BABYLON.Scene(engine);
-  //const scene = createScene();
+  let _scene;
+  let _kanvas;
+  let _engine;
+  let _state = appstate.START;
 
-  var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, BABYLON.Vector3.Zero(), scene);
-  camera.attachControl(canvas, true);
-  var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
-  var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1 }, scene);
-  window.addEventListener("keydown", (ev) => {
-  if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.keyCode === 73) {
-  if (scene.debugLayer.isVisible()) {
-  scene.debugLayer.hide();
-  } else {
-  scene.debugLayer.show();
+  function loadConfig() {
+    
   }
-  }
-  });
+
+
+  function init() {
+    _kanvas = document.createElement("canvas");
+    _kanvas.style.width = "100%";
+    _kanvas.style.height = "100%";
+    _kanvas.id = "kanvas";
+    const element = document.getElementById(maindiv);
+    element.appendChild(_kanvas);
+    
+    _engine = new BABYLON.Engine(_kanvas, true);
+    _scene = new BABYLON.Scene(_engine);
+    //const scene = createScene();
   
- engine.runRenderLoop(() => {
- scene.render();
- });
- }
+    var camera = new BABYLON.ArcRotateCamera("Camera",
+      Math.PI / 2, Math.PI / 2, 2, 
+      BABYLON.Vector3.Zero(), _scene);
+    camera.attachControl(_kanvas, true);
+    var light1 = new BABYLON.HemisphericLight("light1", 
+      new BABYLON.Vector3(1, 1, 0), _scene);
+    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 1 }, _scene);
+  
+    window.addEventListener("keydown", (ev) => {
+      if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.keyCode === 73) {
+        if (_scene.debugLayer.isVisible()) {
+          _scene.debugLayer.hide();
+        } else {
+          _scene.debugLayer.show();
+        }
+      }
+    });
+    
+    _engine.runRenderLoop(() => {
+     _scene.render();
+    });
+  
+  }
 
-init();
+
+}
+
+new LibZero();
